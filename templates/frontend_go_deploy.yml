@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: {{.Release.Name}}-frontend-go
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/frontend_cm.yml") . | sha256sum }}
     spec:
       initContainers:
         - name: wait-for-backend

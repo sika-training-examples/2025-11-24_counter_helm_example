@@ -10,6 +10,8 @@ spec:
       app: {{.Release.Name}}-frontend
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/frontend_cm.yml") . | sha256sum }}
       labels:
         app: {{.Release.Name}}-frontend
     spec:
