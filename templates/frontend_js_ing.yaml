@@ -1,3 +1,4 @@
+{{ if .Values.frontendJSHost }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -8,10 +9,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - frontend.lab0.sikademo.com
-      secretName: frontend.lab0.sikademo.com-tls
+        - {{ .Values.frontendJSHost }}
+      secretName: {{ .Values.frontendJSHost }}-tls
   rules:
-    - host: frontend.lab0.sikademo.com
+    - host: {{ .Values.frontendJSHost }}
       http:
         paths:
           - path: /
@@ -21,3 +22,4 @@ spec:
                 name: frontend
                 port:
                   number: 80
+{{ end }}

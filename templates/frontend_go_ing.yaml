@@ -8,10 +8,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - frontend-go.lab0.sikademo.com
-      secretName: frontend-go.lab0.sikademo.com-tls
+        - {{ .Values.frontendGoHost }}
+      secretName: {{ .Values.frontendGoHost }}-tls
   rules:
-    - host: frontend-go.lab0.sikademo.com
+    - host: {{ required ".Values.frontendGoHost is required" .Values.frontendGoHost }}
       http:
         paths:
           - path: /
