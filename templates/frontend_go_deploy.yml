@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-go
+  name: {{.Release.Name}}-frontend-go
 spec:
   revisionHistoryLimit: 0
-  replicas: 4
+  replicas: {{.Values.frontendGoReplicas}}
   selector:
     matchLabels:
-      app: frontend-go
+      app: {{.Release.Name}}-frontend-go
   template:
     metadata:
       labels:
-        app: frontend-go
+        app: {{.Release.Name}}-frontend-go
     spec:
       initContainers:
         - name: wait-for-backend
@@ -19,7 +19,7 @@ spec:
           command:
             - /bin/sh
             - -c
-            - slu wait-for http200 --url http://backend
+            - slu wait-for http200 --url http://{{.Release.Name}}-backend
       containers:
         - name: main
           image: ghcr.io/ondrejsika/counter-frontend-go
@@ -30,7 +30,7 @@ spec:
               value: '1'
           envFrom:
             - configMapRef:
-                name: frontend
+                name: {{.Release.Name}}-frontend
           startupProbe:
             httpGet:
               path: /api/livez

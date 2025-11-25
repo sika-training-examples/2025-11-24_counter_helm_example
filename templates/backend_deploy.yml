@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: {{.Release.Name}}-backend
 spec:
   revisionHistoryLimit: 0
-  replicas: 4
+  replicas: {{ .Values.backendReplicas }}
   selector:
     matchLabels:
-      app: backend
+      app: {{.Release.Name}}-backend
   template:
     metadata:
       labels:
-        app: backend
+        app: {{.Release.Name}}-backend
     spec:
-      serviceAccountName: backend
+      serviceAccountName: {{.Release.Name}}-backend
       initContainers:
         - name: wait-for-redis
           image: ghcr.io/sikalabs/slu:v0.95.1
           command:
             - "/bin/sh"
             - "-c"
-            - "slu wait-for tcp -a redis:6379"
+            - "slu wait-for tcp -a {{.Release.Name}}-redis:6379"
         - name: wait-for-migrations
           image: sikalabs/kubectl
           command:
             - "/bin/sh"
             - "-c"
-            - "sleep 2 && kubectl wait --for=condition=complete --timeout=600s job/backend-migrations"
+            - "sleep 2 && kubectl wait --for=condition=complete --timeout=600s job/{{.Release.Name}}-backend-migrations"
       containers:
         - name: main
           image: ghcr.io/ondrejsika/counter
@@ -34,7 +34,7 @@ spec:
             - containerPort: 8000
           env:
             - name: REDIS
-              value: redis
+              value: {{.Release.Name}}-redis
             - name: SLOW_START
               value: '5'
             - name: EXTRA_TEXT

@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: frontend-go
+  name: {{.Release.Name}}-frontend-go
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
@@ -18,6 +18,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: frontend-go
+                name: {{.Release.Name}}-frontend-go
                 port:
                   number: 80
