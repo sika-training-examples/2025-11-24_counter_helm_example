@@ -25,6 +25,16 @@ spec:
         - name: redis
           persistentVolumeClaim:
             claimName: redis
+      initContainers:
+        - name: setup-fs
+          image: debian:12-slim
+          command:
+            - /bin/sh
+            - -c
+            - chown -R 999:999 /data
+          volumeMounts:
+            - name: redis
+              mountPath: /data
       containers:
         - name: main
           image: docker.io/library/redis:8
